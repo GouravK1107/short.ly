@@ -1,0 +1,691 @@
+/* ==========================================================
+   Short.ly — Link Foundry
+   Plain CSS, no framework. Theme tokens live in custom
+   properties so dark/light share the same components,
+   fonts, and ember/gold accent — only the surface flips.
+   ========================================================== */
+
+:root {
+  /* brand accents — identical in both themes */
+  --ember: #FF6B35;
+  --ember-deep: #E8531F;
+  --gold: #F2C14E;
+  --ink: #1C1815;              /* fixed dark ink — button text, spinner, favicon */
+
+  /* dark theme (default) */
+  --page-bg:
+    radial-gradient(ellipse 900px 600px at 50% -10%, rgba(255,107,53,0.10), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 85% 90%, rgba(242,193,78,0.06), transparent 55%),
+    #131110;
+  --surface: rgba(245, 239, 230, 0.045);
+  --surface-hover: rgba(245, 239, 230, 0.09);
+  --surface-border: rgba(245, 239, 230, 0.10);
+  --text: #F5EFE6;
+  --text-60: rgba(245, 239, 230, 0.6);
+  --text-40: rgba(245, 239, 230, 0.4);
+  --text-30: rgba(245, 239, 230, 0.3);
+  --text-25: rgba(245, 239, 230, 0.25);
+  --ember-field-opacity: 1;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] {
+  --page-bg:
+    radial-gradient(ellipse 900px 600px at 50% -10%, rgba(255,107,53,0.10), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 85% 100%, rgba(242,193,78,0.10), transparent 55%),
+    #FAF5EC;
+  --surface: rgba(28, 24, 21, 0.035);
+  --surface-hover: rgba(28, 24, 21, 0.06);
+  --surface-border: rgba(28, 24, 21, 0.12);
+  --text: #1C1815;
+  --text-60: rgba(28, 24, 21, 0.62);
+  --text-40: rgba(28, 24, 21, 0.42);
+  --text-30: rgba(28, 24, 21, 0.32);
+  --text-25: rgba(28, 24, 21, 0.28);
+  --ember-field-opacity: 0.4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  background: none;
+  color: inherit;
+}
+
+::selection {
+  background: var(--ember);
+  color: var(--ink);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.text-ember { color: var(--ember); }
+.text-gold  { color: var(--gold); }
+.text-soft  { color: var(--text-40); }
+
+/* ----------------------------------------------------------
+   Page shell
+---------------------------------------------------------- */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  background: var(--page-bg);
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.shell {
+  width: 100%;
+  max-width: 576px;
+}
+
+/* top loading indicator — the ONLY loading UI. never in the
+   input or the button. */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--ember), var(--gold));
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.55);
+  z-index: 100;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+}
+
+.progress-bar.is-active {
+  opacity: 1;
+}
+
+/* ----------------------------------------------------------
+   Ambient ember field
+---------------------------------------------------------- */
+.ember-field {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  opacity: var(--ember-field-opacity);
+}
+
+.ember-field span {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ember) 0%, rgba(255,107,53,0) 70%);
+  opacity: 0;
+  animation-name: ember-rise;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes ember-rise {
+  0%   { transform: translateY(0) translateX(0); opacity: 0; }
+  8%   { opacity: 0.55; }
+  90%  { opacity: 0.15; }
+  100% { transform: translateY(-100vh) translateX(12px); opacity: 0; }
+}
+
+/* ----------------------------------------------------------
+   Entrance animation
+---------------------------------------------------------- */
+.anim-rise {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------------------------------------------------
+   Brand header
+---------------------------------------------------------- */
+.site-header {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.site-header__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px;
+  gap: 16px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  color: var(--ember);
+  display: inline-flex;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+
+.brand:hover .brand-mark {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.brand-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.site-header__right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.site-header__tagline {
+  font-size: 0.75rem;
+  color: var(--text-30);
+  letter-spacing: 0.02em;
+  display: none;
+}
+
+/* theme toggle */
+.theme-toggle {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text-60);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.theme-toggle:active {
+  transform: scale(0.92);
+}
+
+.theme-toggle svg {
+  position: absolute;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+
+.theme-toggle .icon-sun {
+  opacity: 0;
+  transform: rotate(-40deg) scale(0.6);
+}
+
+.theme-toggle .icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+[data-theme="light"] .theme-toggle .icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+[data-theme="light"] .theme-toggle .icon-moon {
+  opacity: 0;
+  transform: rotate(40deg) scale(0.6);
+}
+
+/* ----------------------------------------------------------
+   Main / hero
+---------------------------------------------------------- */
+.main {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 56px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.anvil-mark {
+  color: var(--ember);
+  display: inline-flex;
+}
+
+.eyebrow__label {
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 107, 53, 0.8);
+  font-weight: 500;
+}
+
+.headline {
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2.5rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.subhead {
+  text-align: center;
+  color: var(--text-60);
+  margin: 12px 0 40px;
+  font-size: 0.9375rem;
+}
+
+/* ----------------------------------------------------------
+   Forge bar (input row)
+---------------------------------------------------------- */
+.forge-form {
+  width: 100%;
+}
+
+.server-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: rgba(255, 107, 53, 0.9);
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.server-error__icon {
+  flex-shrink: 0;
+}
+
+.forge-bar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease, background 0.4s ease;
+}
+
+.forge-bar:focus-within {
+  border-color: rgba(255, 107, 53, 0.5);
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.10);
+}
+
+.forge-bar.is-error {
+  border-color: rgba(255, 90, 60, 0.55);
+  box-shadow: 0 0 0 4px rgba(255, 90, 60, 0.12);
+  animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+/* while forging: the bar quietly dims and disables — no motion
+   inside the input, no spinner inside the button */
+.forge-bar.is-forging {
+  opacity: 0.55;
+}
+
+.forge-bar__field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.forge-bar__link-icon {
+  flex-shrink: 0;
+  color: var(--text-30);
+}
+
+.forge-bar__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--text);
+  padding: 8px 0;
+}
+
+/* kill every browser's native validity/focus decoration —
+   the bar itself (:focus-within above) is the only focus cue */
+.forge-bar__input:focus,
+.forge-bar__input:focus-visible,
+.forge-bar__input:invalid,
+.forge-bar__input:required,
+.forge-bar__input:-webkit-autofill {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+.forge-bar__input::placeholder {
+  color: var(--text-30);
+}
+
+.forge-btn {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--ember) 0%, var(--ember-deep) 100%);
+  color: var(--ink);
+  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+  transition: transform 0.18s ease, box-shadow 0.25s ease, filter 0.2s ease, opacity 0.25s ease;
+}
+
+.forge-btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+  box-shadow: 0 6px 18px rgba(255, 107, 53, 0.38), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.forge-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.forge-btn:disabled {
+  cursor: progress;
+  opacity: 0.6;
+  filter: none;
+  box-shadow: none;
+}
+
+.btn-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-hint {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-30);
+  margin: 12px 0 0;
+  height: 16px;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.form-hint.is-error-text {
+  color: #E8542F;
+}
+
+/* ----------------------------------------------------------
+   Result token card
+---------------------------------------------------------- */
+.token-card {
+  position: relative;
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin-top: 40px;
+  background: linear-gradient(160deg, rgba(242,193,78,0.09), var(--surface));
+  border: 1px solid rgba(242, 193, 78, 0.28);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.token-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.token-card__label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-40);
+  font-weight: 500;
+}
+
+.stamp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+  box-shadow: 0 0 8px rgba(242, 193, 78, 0.8);
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.8); }
+}
+
+.token-card__link {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--gold);
+  word-break: break-all;
+  transition: color 0.2s ease;
+}
+
+.token-card__link:hover {
+  color: var(--ember);
+}
+
+.token-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: var(--surface-hover);
+}
+
+.copy-btn.copied {
+  background: rgba(122, 201, 138, 0.16);
+  border-color: rgba(76, 175, 100, 0.4);
+  color: #4CAF64;
+}
+
+.reset-link {
+  font-size: 0.875rem;
+  color: var(--text-40);
+  transition: color 0.2s ease;
+}
+
+.reset-link:hover {
+  color: var(--text-60);
+}
+
+/* ----------------------------------------------------------
+   Feature strip
+---------------------------------------------------------- */
+.feature-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 56px;
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.reveal-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 14px 6px;
+  border-top: 1px solid var(--surface-border);
+}
+
+.feature-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text);
+  margin: 2px 0 0;
+}
+
+.feature-sub {
+  font-size: 0.7rem;
+  color: var(--text-40);
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   Footer
+---------------------------------------------------------- */
+.site-footer {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.site-footer__text {
+  font-size: 0.75rem;
+  color: var(--text-25);
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   Responsive tuning
+---------------------------------------------------------- */
+@media (min-width: 640px) {
+  .site-header__inner { padding: 24px 32px; }
+  .site-header__tagline { display: inline; }
+  .headline { font-size: 3rem; }
+  .subhead { font-size: 1rem; }
+  .forge-bar { flex-direction: row; gap: 0; }
+  .forge-bar__field { padding: 0 16px; }
+  .forge-bar__input { padding: 12px 0; font-size: 16px; }
+  .token-card { padding: 28px; }
+  .token-card__link { font-size: 1.5rem; }
+  .feature-strip { gap: 16px; }
+}
+
+@media (max-width: 480px) {
+  .forge-btn {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
+}
+
+/* ----------------------------------------------------------
+   Reduced motion
+---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .anim-rise,
+  .ember-field span,
+  .stamp-dot,
+  .forge-bar.is-error,
+  .progress-bar {
+    animation: none !important;
+    transition: none !important;
+  }
+  .anim-rise {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-up {
+    transition: opacity 0.3s ease;
+    transform: none !important;
+  }
+}
