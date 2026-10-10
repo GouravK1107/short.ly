@@ -15,6 +15,10 @@ A modern, fast, and minimal URL Shortener built with **Django**. Convert long UR
 
 ---
 
+> 🌍 **Project Type: Portfolio & Open for Everyone**
+>
+> This project started as a part of my portfolio, but it's built to be useful for everyone. Feel free to use it, fork it, and adapt it for your own needs. Contributions, issues, and suggestions are always welcome. If you find it helpful, consider giving it a ⭐!
+
 ## ✨ Features
 
 - 🔗 Convert long URLs into short, shareable links
